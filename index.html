@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אפליקציית תרגול שאלות</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --correct: #16a34a;
+            --correct-bg: #dcfce7;
+            --incorrect: #dc2626;
+            --incorrect-bg: #fee2e2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 650px;
+            padding: 32px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .counter {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background-color: var(--bg);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-btn {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            text-align: right;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #f0f6ff;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct) !important;
+            color: var(--correct) !important;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg) !important;
+            border-color: var(--incorrect) !important;
+            color: var(--incorrect) !important;
+            font-weight: 600;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: none;
+        }
+
+        .next-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .score-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .score-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .score-val {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .restart-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="quiz-container">
+        <div class="loading" id="loading-text">טוען את השאלות...</div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentIndex = 0;
+        let score = 0;
+
+        // טעינת הקובץ JSON
+        fetch('questions_2_clean.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('שגיאה שטוענת את הקובץ');
+                }
+                return response.json();
+            })
+            .then(data => {
+                questions = data;
+                renderQuestion();
+            })
+            .catch(error => {
+                document.getElementById('quiz-container').innerHTML = 
+                    '<div class="loading" style="color:red;">שגיאה בטעינת קובץ השאלות. ודא שהקובץ questions_2_clean.json נמצא באותה תיקייה.</div>';
+                console.error(error);
+            });
+
+        function renderQuestion() {
+            if (currentIndex >= questions.length) {
+                renderSummary();
+                return;
+            }
+
+            const q = questions[currentIndex];
+            const container = document.getElementById('quiz-container');
+
+            let optionsHtml = q.options.map((opt, idx) => 
+                `<button class="option-btn" onclick="selectOption(${idx})">${opt}</button>`
+            ).join('');
+
+            container.innerHTML = `
+                <div class="header">
+                    <span class="title">מבחן אמריקאי</span>
+                    <span class="counter">שאלה ${currentIndex + 1} מתוך ${questions.length}</span>
+                </div>
+                <div class="question-text">${q.question}</div>
+                <div class="options-list" id="options-list">
+                    ${optionsHtml}
+                </div>
+                <div class="actions">
+                    <button class="next-btn" id="next-btn" onclick="nextQuestion()">השאלה הבאה ←</button>
+                </div>
+            `;
+        }
+
+        function selectOption(selectedIdx) {
+            const q = questions[currentIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIdx === q.correctAnswer) {
+                buttons[selectedIdx].classList.add('correct');
+                score++;
+            } else {
+                buttons[selectedIdx].classList.add('incorrect');
+                if (q.correctAnswer >= 0 && q.correctAnswer < buttons.length) {
+                    buttons[q.correctAnswer].classList.add('correct');
+                }
+            }
+
+            nextBtn.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            renderQuestion();
+        }
+
+        function renderSummary() {
+            const container = document.getElementById('quiz-container');
+            const finalScore = Math.round((score / questions.length) * 100);
+
+            container.innerHTML = `
+                <div class="score-container">
+                    <div class="score-title">סיימת את התרגול! 🎉</div>
+                    <div style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 8px;">הציון הסופי שלך:</div>
+                    <div class="score-val">${finalScore}</div>
+                    <p style="margin-bottom: 24px;">ענית נכון על ${score} מתוך ${questions.length} שאלות.</p>
+                    <button class="restart-btn" onclick="restartQuiz()">להתחיל מחדש 🔄</button>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            renderQuestion();
+        }
+    </script>
+</body>
+</html>

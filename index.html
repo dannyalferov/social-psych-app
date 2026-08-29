@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מאגר תרגול - פסיכולוגיה חברתית</title>
+    <title>מאגר תרגול ומבחנים - פסיכולוגיה חברתית</title>
     <style>
         :root {
             --primary-color: #2563eb;
             --primary-hover: #1d4ed8;
+            --accent-color: #7c3aed;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #0f172a;
@@ -25,35 +26,46 @@
         body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
         .container { max-width: 800px; width: 100%; }
         
-        header { text-align: center; margin-bottom: 25px; }
+        header { text-align: center; margin-bottom: 20px; }
         header h1 { color: var(--primary-color); margin-bottom: 8px; font-size: 28px; }
         header p { color: var(--subtext-color); font-size: 15px; }
 
+        .top-bar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .mode-btn { background-color: var(--card-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .mode-btn.active { border-color: var(--primary-color); color: var(--primary-color); background-color: #eff6ff; }
+        .exam-btn { background-color: var(--accent-color); color: white; border: none; }
+        .exam-btn:hover { background-color: #6d28d9; }
+
+        .timer-box { background: #f3e8ff; color: #6b21a8; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 18px; text-align: center; margin-bottom: 15px; border: 1px solid #d8b4fe; }
+
         .search-section { background: var(--card-bg); padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; border: 1px solid var(--border-color); }
         .search-section input, .search-section select { flex: 1; min-width: 220px; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 15px; outline: none; transition: border-color 0.2s; }
-        .search-section input:focus, .search-section select:focus { border-color: var(--primary-color); }
 
         .quiz-card { background: var(--card-bg); border-radius: 12px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border-color); }
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 14px; color: var(--subtext-color); font-weight: 600; }
         .lesson-badge { background: #eff6ff; color: var(--primary-color); padding: 4px 10px; border-radius: 6px; font-size: 13px; }
-        .question-text { font-size: 19px; font-weight: 600; margin-bottom: 24px; line-height: 1.5; color: var(--text-color); }
+        .question-text { font-size: 19px; font-weight: 600; margin-bottom: 24px; line-height: 1.5; }
 
         .options-list { display: flex; flex-direction: column; gap: 12px; }
-        .option-btn { background: #f8fafc; border: 2px solid var(--border-color); border-radius: 8px; padding: 14px 18px; font-size: 16px; text-align: right; cursor: pointer; transition: all 0.2s ease; color: var(--text-color); }
+        .option-btn { background: #f8fafc; border: 2px solid var(--border-color); border-radius: 8px; padding: 14px 18px; font-size: 16px; text-align: right; cursor: pointer; transition: all 0.2s ease; }
         .option-btn:hover:not([disabled]) { background: #f1f5f9; border-color: #cbd5e1; }
         
+        .option-btn.selected { border-color: var(--accent-color); background-color: #f3e8ff; font-weight: bold; }
         .option-btn.correct { background: var(--correct-bg) !important; border-color: var(--correct-border) !important; color: var(--correct-text) !important; font-weight: bold; }
         .option-btn.incorrect { background: var(--incorrect-bg) !important; border-color: var(--incorrect-border) !important; color: var(--incorrect-text) !important; }
 
         .nav-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; pt: 16px; border-top: 1px solid var(--border-color); }
-        .btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-        .btn:hover:not([disabled]) { background-color: var(--primary-hover); }
+        .btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
         .btn:disabled { background-color: #94a3b8; cursor: not-allowed; opacity: 0.7; }
+        .finish-btn { background-color: #dc2626; }
+        .finish-btn:hover { background-color: #b91c1c; }
+
+        .score-card { background: var(--card-bg); border-radius: 12px; padding: 30px; text-align: center; border: 1px solid var(--border-color); }
+        .score-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .score-number { font-size: 48px; color: var(--accent-color); font-weight: 800; margin-bottom: 20px; }
 
         .search-results { display: flex; flex-direction: column; gap: 12px; }
-        .result-item { background: var(--card-bg); padding: 18px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; transition: border-color 0.2s; }
-        .result-item:hover { border-color: var(--primary-color); }
-        .result-meta { font-size: 13px; color: var(--subtext-color); margin-bottom: 6px; }
+        .result-item { background: var(--card-bg); padding: 18px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; }
 
         .hidden { display: none !important; }
     </style>
@@ -62,11 +74,20 @@
 
 <div class="container">
     <header>
-        <h1>מאגר תרגול: פסיכולוגיה חברתית</h1>
+        <h1>מאגר תרגול ומבחנים: פסיכולוגיה חברתית</h1>
         <p>קורס מתוקשב - אוניברסיטת חיפה</p>
     </header>
 
-    <div class="search-section">
+    <div class="top-bar">
+        <button class="mode-btn active" id="practiceModeBtn" onclick="switchMode('practice')">מצב תרגול חופשי</button>
+        <button class="mode-btn exam-btn" id="examModeBtn" onclick="startExam()">התחל מבחן מתוזמן (30 שאלות)</button>
+    </div>
+
+    <div id="timerContainer" class="timer-box hidden">
+        זמן נותר למבחן: <span id="timeDisplay">45:00</span>
+    </div>
+
+    <div class="search-section" id="searchSection">
         <input type="text" id="searchInput" placeholder="חפש שאלה או מילת מפתח..." oninput="handleSearch()">
         <select id="lessonFilter" onchange="handleFilter()">
             <option value="all">כל השיעורים</option>
@@ -84,9 +105,17 @@
             
             <div class="nav-controls">
                 <button class="btn" id="prevBtn" onclick="navigate(-1)">לשאלה הקודמת</button>
+                <button class="btn finish-btn hidden" id="finishExamBtn" onclick="finishExam()">סים מבחן והגש</button>
                 <button class="btn" id="nextBtn" onclick="navigate(1)">לשאלה הבאה</button>
             </div>
         </div>
+    </main>
+
+    <main id="scoreView" class="score-card hidden">
+        <div class="score-title">המבחן הושלם!</div>
+        <div class="score-number" id="finalScore">0</div>
+        <p id="scoreSummary" style="margin-bottom: 20px; color: var(--subtext-color);"></p>
+        <button class="btn" onclick="switchMode('practice')">חזור לתרגול חופשי</button>
     </main>
 
     <main id="searchResultsView" class="hidden">
@@ -98,9 +127,12 @@
 let questionsData = [];
 let filteredQuestions = [];
 let currentIndex = 0;
+let isExamMode = false;
+let examAnswers = {};
+let timerInterval = null;
+let timeLeft = 45 * 60; // 45 דקות בשניות
 
-// טעינת ה-JSON החיצוני
-fetch('questions.json')
+fetch('questions_2.json')
     .then(response => response.json())
     .then(data => {
         questionsData = processQuestions(data);
@@ -109,24 +141,16 @@ fetch('questions.json')
         renderQuestion();
     })
     .catch(error => {
-        document.getElementById('questionText').innerText = 'שגיאה בטעינת קובץ questions.json. ודא שהקובץ נמצא באותה תיקייה.';
-        console.error(error);
+        document.getElementById('questionText').innerText = 'שגיאה בטעינת קובץ JSON.';
     });
 
-// עיבוד השאלות: ניקוי ה-JSON ופענוח התשובה הנכונה לפי סימן ה-']'
 function processQuestions(rawQuestions) {
     return rawQuestions.map(q => {
         let correctIdx = q.correctAnswer;
-        
-        // ניקוי אפשרויות וזיהוי התשובה המסומנת ב-']'
         const cleanedOptions = q.options.map((opt, idx) => {
-            if (opt.includes('[')) {
-                correctIdx = idx;
-            }
-            // הסרת הסימן '[' וטקסטים מיותרים בסוף האופציות
+            if (opt.includes('[')) correctIdx = idx;
             return opt.replace(/\[/g, '').trim();
         });
-
         return {
             ...q,
             options: cleanedOptions,
@@ -135,20 +159,13 @@ function processQuestions(rawQuestions) {
     });
 }
 
-// אכלוס סרגל הסינון לפי שיעורים קיימים בנתונים
 function populateLessonFilter() {
     const filterSelect = document.getElementById('lessonFilter');
     const lessonsMap = new Map();
-
     questionsData.forEach(q => {
-        if (!lessonsMap.has(q.lesson)) {
-            lessonsMap.set(q.lesson, q.lessonTitle || `שיעור ${q.lesson}`);
-        }
+        if (!lessonsMap.has(q.lesson)) lessonsMap.set(q.lesson, q.lessonTitle || `שיעור ${q.lesson}`);
     });
-
-    const sortedLessons = Array.from(lessonsMap.keys()).sort((a, b) => a - b);
-    
-    sortedLessons.forEach(lessonNum => {
+    Array.from(lessonsMap.keys()).sort((a, b) => a - b).forEach(lessonNum => {
         const option = document.createElement('option');
         option.value = lessonNum;
         option.innerText = lessonsMap.get(lessonNum);
@@ -156,13 +173,58 @@ function populateLessonFilter() {
     });
 }
 
-function renderQuestion() {
-    if (filteredQuestions.length === 0) {
-        document.getElementById('questionText').innerText = 'לא נמצאו שאלות תואמות.';
-        document.getElementById('optionsContainer').innerHTML = '';
-        document.getElementById('progressTag').innerText = '0 מתוך 0';
-        return;
+function switchMode(mode) {
+    clearInterval(timerInterval);
+    isExamMode = (mode === 'exam');
+    document.getElementById('practiceModeBtn').classList.toggle('active', !isExamMode);
+    document.getElementById('examModeBtn').classList.toggle('active', isExamMode);
+    document.getElementById('searchSection').classList.toggle('hidden', isExamMode);
+    document.getElementById('timerContainer').classList.toggle('hidden', !isExamMode);
+    document.getElementById('finishExamBtn').classList.toggle('hidden', !isExamMode);
+    document.getElementById('scoreView').classList.add('hidden');
+    document.getElementById('quizView').classList.remove('hidden');
+
+    if (!isExamMode) {
+        filteredQuestions = [...questionsData];
+        currentIndex = 0;
+        renderQuestion();
     }
+}
+
+function startExam() {
+    switchMode('exam');
+    examAnswers = {};
+    
+    // בחירת 30 שאלות אקראיות
+    const shuffled = [...questionsData].sort(() => 0.5 - Math.random());
+    filteredQuestions = shuffled.slice(0, 30);
+    currentIndex = 0;
+
+    // הגדרת טיימר של 45 דקות
+    timeLeft = 45 * 60;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert('הזמן הסתיים! המבחן יוגש אוטומטית.');
+            finishExam();
+        }
+    }, 1000);
+
+    renderQuestion();
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timeDisplay').innerText = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function renderQuestion() {
+    if (filteredQuestions.length === 0) return;
 
     const q = filteredQuestions[currentIndex];
     document.getElementById('lessonTag').innerText = q.lessonTitle || `שיעור ${q.lesson}`;
@@ -176,7 +238,16 @@ function renderQuestion() {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
         btn.innerText = opt;
-        btn.onclick = () => checkAnswer(idx, q.correctAnswerParsed, btn);
+
+        if (isExamMode) {
+            if (examAnswers[currentIndex] === idx) btn.classList.add('selected');
+            btn.onclick = () => {
+                examAnswers[currentIndex] = idx;
+                renderQuestion();
+            };
+        } else {
+            btn.onclick = () => checkAnswer(idx, q.correctAnswerParsed, btn);
+        }
         container.appendChild(btn);
     });
 
@@ -188,13 +259,31 @@ function checkAnswer(selectedIdx, correctIdx, btnElement) {
     const buttons = document.querySelectorAll('.option-btn');
     buttons.forEach((btn, idx) => {
         btn.disabled = true;
-        if (idx === correctIdx) {
-            btn.classList.add('correct');
-        }
+        if (idx === correctIdx) btn.classList.add('correct');
     });
     if (selectedIdx !== correctIdx && correctIdx !== -1) {
         btnElement.classList.add('incorrect');
     }
+}
+
+function finishExam() {
+    clearInterval(timerInterval);
+    let correctCount = 0;
+
+    filteredQuestions.forEach((q, idx) => {
+        if (examAnswers[idx] === q.correctAnswerParsed) {
+            correctCount++;
+        }
+    });
+
+    const score = Math.round((correctCount / filteredQuestions.length) * 100);
+    
+    document.getElementById('quizView').classList.add('hidden');
+    document.getElementById('timerContainer').classList.add('hidden');
+    document.getElementById('scoreView').classList.remove('hidden');
+    
+    document.getElementById('finalScore').innerText = `${score}`;
+    document.getElementById('scoreSummary').innerText = `ענית נכון על ${correctCount} מתוך ${filteredQuestions.length} שאלות.`;
 }
 
 function navigate(direction) {
@@ -205,13 +294,7 @@ function navigate(direction) {
 function handleFilter() {
     const selectedLesson = document.getElementById('lessonFilter').value;
     document.getElementById('searchInput').value = '';
-
-    if (selectedLesson === 'all') {
-        filteredQuestions = [...questionsData];
-    } else {
-        filteredQuestions = questionsData.filter(q => q.lesson.toString() === selectedLesson);
-    }
-
+    filteredQuestions = selectedLesson === 'all' ? [...questionsData] : questionsData.filter(q => q.lesson.toString() === selectedLesson);
     currentIndex = 0;
     showQuizView();
     renderQuestion();
@@ -223,9 +306,7 @@ function handleSearch() {
 
     filteredQuestions = questionsData.filter(q => {
         const matchesLesson = selectedLesson === 'all' || q.lesson.toString() === selectedLesson;
-        const matchesQuery = query === '' || 
-                             q.question.toLowerCase().includes(query) || 
-                             q.options.some(opt => opt.toLowerCase().includes(query));
+        const matchesQuery = query === '' || q.question.toLowerCase().includes(query) || q.options.some(opt => opt.toLowerCase().includes(query));
         return matchesLesson && matchesQuery;
     });
 
@@ -242,19 +323,14 @@ function handleSearch() {
 function renderSearchResults() {
     const container = document.getElementById('resultsContainer');
     container.innerHTML = '';
-
     if (filteredQuestions.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px;">לא נמצאו שאלות תואמות לחיפוש.</div>';
+        container.innerHTML = '<div style="text-align:center; padding: 20px;">לא נמצאו שאלות תואמות.</div>';
         return;
     }
-
     filteredQuestions.forEach((q) => {
         const item = document.createElement('div');
         item.className = 'result-item';
-        item.innerHTML = `
-            <div class="result-meta">${q.lessonTitle || 'שיעור ' + q.lesson} | שאלה ${q.qNumInLesson}</div>
-            <div style="font-weight:600;">${q.question}</div>
-        `;
+        item.innerHTML = `<div style="font-size:13px; color:var(--subtext-color);">${q.lessonTitle || 'שיעור ' + q.lesson}</div><div style="font-weight:600;">${q.question}</div>`;
         item.onclick = () => {
             document.getElementById('searchInput').value = '';
             currentIndex = filteredQuestions.indexOf(q);
